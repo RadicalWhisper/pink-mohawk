@@ -52,24 +52,36 @@ async def ping(ctx):
     await ctx.send('pong')
 
 @bot.command()
-async def search(ctx, search : str):
-    await ctx.send("Performing Matrix search...")
-    weapon = lookup_weapon(search)
-   
-    if weapon is None:
-        await ctx.send("Couldn't find a Matrix entry for \"" + search + "\". Try again.")
-        await ctx.message.delete()
+async def search(ctx, entry_type : str, search : str):
+    if entry_type is None:
+        await ctx.send("Matrix Search usage: >search [type] [entry]\nAvailable types: weapon, armor, matrix, gear, augmentation, streetpedia.")
         return
 
-    attackRatings = weapon["attack_ratings"]["close"] + "/" + weapon["attack_ratings"]["near"] + "/" + weapon["attack_ratings"]["medium"] + "/" + weapon["attack_ratings"]["far"] + "/" + weapon["attack_ratings"]["extreme"]
+    if entry_type is not "weapon" or "armor" or "matrix" or "gear" or "augmentation" or "streetpedia":
+        await ctx.send("Matrix Search failed. \"" + entry_type + "\" is not an avaiable type. Available types: weapon, armor, matrix, gear, augmentation, streetpedia.")
+        return
 
-    embed = discord.Embed(title=weapon["name"], description=weapon["description"], color=0x00ff00)
-    embed.add_field(name="DV", value=weapon["damage_value"], inline=False)
-    embed.add_field(name="Attack Ratings", value=attackRatings, inline=False)
-    embed.add_field(name="Availability", value=weapon["availability"], inline=False)
-    embed.add_field(name="Cost", value=weapon["cost"] + u'\u00A5', inline=False)
-    await ctx.send(embed=embed)
-    await ctx.message.delete()
+    if entry_type.lower() == "weapon":
+        await ctx.send("Performing Matrix search for \"" + search + "\"...")
+        weapon = lookup_weapon(search)
+   
+        if weapon is None:
+            await ctx.send("Couldn't find a Matrix entry for \"" + search + "\". Try again.")
+            await ctx.message.delete()
+            return
+
+        attackRatings = weapon["attack_ratings"]["close"] + "/" + weapon["attack_ratings"]["near"] + "/" + weapon["attack_ratings"]["medium"] + "/" + weapon["attack_ratings"]["far"] + "/" + weapon["attack_ratings"]["extreme"]
+
+        embed = discord.Embed(title=weapon["name"], description=weapon["description"], color=0x00ff00)
+        embed.add_field(name="DV", value=weapon["damage_value"], inline=False)
+        embed.add_field(name="Attack Ratings", value=attackRatings, inline=False)
+        embed.add_field(name="Availability", value=weapon["availability"], inline=False)
+        embed.add_field(name="Cost", value=weapon["cost"] + u'\u00A5', inline=False)
+        await ctx.send(embed=embed)
+        await ctx.message.delete()
+    
+    if entry_type.lower() == "armor":
+        await ctx.send("There are currently no armor entries in the database.")
 
 @bot.command()
 async def embedtest(ctx):
