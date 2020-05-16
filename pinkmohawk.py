@@ -15,6 +15,7 @@ savedPool = []
 
 activeCharacters = []
 
+
 @bot.event
 async def on_ready():
     print('Logged in as')
