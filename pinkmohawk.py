@@ -54,7 +54,7 @@ async def ping(ctx):
 @bot.command()
 async def search(ctx, entry_type=None, search=None):
     if entry_type is None:
-        await ctx.send("Matrix Search usage: >search [type] [entry]\nAvailable types: weapon, armor, matrix, gear, augmentation, streetpedia.")
+        await ctx.send("Matrix Search usage: `>search [type] [entry]`\nIf the entry is multiple words, they must be wrapped in double quotes (\"\").\nAvailable types: weapon, armor, matrix, gear, augmentation, streetpedia.")
         return
 
     entry_types = ["weapon", "armor", "matrix", "gear", "augmentation", "streetpedia"]
@@ -63,7 +63,10 @@ async def search(ctx, entry_type=None, search=None):
         return
 
     if entry_type.lower() == "weapon":
-        await ctx.send("Performing Matrix search for \"" + search + "\"...")
+        if search is None:
+            await ctx.send("Command requires [entry]. Please try your search again.")
+             
+        await ctx.send("Performing Matrix search for \"" + search + "\"...")    
         weapon = lookup_weapon(search)
    
         if weapon is None:
