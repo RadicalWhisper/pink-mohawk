@@ -11,8 +11,6 @@ TOKEN = environ['TOKEN']
 bot = commands.Bot(command_prefix='>')
 savedPool = []
 
-activeCharacters = []
-
 @bot.event
 async def on_ready():
     print('Logged in as')

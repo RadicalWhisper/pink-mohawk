@@ -1,7 +1,7 @@
-[
-    {
+{
+    "Combat Axe" : {
         "name": "Combat Axe",
-        "description": "Shadowrun 6th World: p247",
+        "description": "Shadowrun Sixth World: p247",
         "damage_value": "5P",
          "attack_ratings": {
             "close": "9",
@@ -13,9 +13,9 @@
         "availability": "4",
         "cost": "500"
     },
-    {
+  "Combat Knife" : {
         "name": "Combat Knife",
-        "description": "Shadowrun 6th World: p247",
+        "description": "Shadowrun Sixth World: p247",
         "damage_value": "3P",
          "attack_ratings": {
             "close": 8,
@@ -27,4 +27,4 @@
         "availability": "2",
         "cost": "220"
     }
-]
+}
