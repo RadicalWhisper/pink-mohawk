@@ -51,21 +51,20 @@ def roll_dice_pool(dice):
 async def ping(ctx):
     await ctx.send('pong')
 
-@bot.command()
+@bot.command(aliases=['r'])
 async def search(ctx, entry_type=None, search=None):
     if entry_type is None:
         await ctx.send("Matrix Search usage: `>search [type] [entry]`\nIf the entry is multiple words, they must be wrapped in double quotes (\"\").\nAvailable types: weapon, armor, matrix, gear, augmentation, streetpedia.")
         return
 
-    entry_types = ["weapon", "armor", "matrix", "gear", "augmentation", "streetpedia"]
-    if entry_type.lower() not in entry_types:
+    if entry_type.lower() not in ENTRY_TYPES:
         await ctx.send("Matrix Search failed: \"" + entry_type + "\" is not an avaiable type. Available types: weapon, armor, matrix, gear, augmentation, streetpedia.")
         return
 
     if entry_type.lower() == "weapon":
         if search is None:
-            await ctx.send("Command requires [entry]. Please try your search again.")
-             
+            await ctx.send("Command requires `[entry]`. Please try your search again.")
+
         await ctx.send("Performing Matrix search for \"" + search + "\"...")    
         weapon = lookup_weapon(search)
    
@@ -94,7 +93,7 @@ async def embedtest(ctx):
     embed.add_field(name="Field2", value="hi2", inline=False)
     await ctx.send(embed=embed)
 
-@bot.command()
+@bot.command(aliases=['r'])
 async def roll(ctx, *args):
     
     dice = int(args[0])
@@ -149,7 +148,7 @@ async def roll(ctx, *args):
         await ctx.send("Error: " + str(e))
         return
         
-@bot.command()
+@bot.command(aliases=['rr'])
 async def reroll(ctx, rollval : int):
     try:
         if len(savedPool) > 0:
