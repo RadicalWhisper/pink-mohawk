@@ -53,9 +53,11 @@ async def ping(ctx):
 
 @bot.command()
 async def lookup(ctx, search : str):
+    await ctx.send("Performing Matrix search...")
     weapon = lookup_weapon(search)
+   
     if weapon is None:
-        await ctx.send("Couldn't find a matrix entry for " + search + ". Try again.")
+        await ctx.send("Couldn't find a Matrix entry for \"" + search + "\". Try again.")
         return
     attackRatings = weapon["attack_ratings"]["close"] + "/" + weapon["attack_ratings"]["near"] + "/" + weapon["attack_ratings"]["medium"] + "/" + weapon["attack_ratings"]["far"] + "/" + weapon["attack_ratings"]["extreme"]
     
