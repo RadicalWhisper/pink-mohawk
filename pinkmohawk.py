@@ -1,12 +1,12 @@
 # pinkmohawk.py
-import os
+from os import environ
 import discord
 from discord.ext import commands
 import random
 import math
 from lookup import *
 
-TOKEN = os.getenv('TOKEN')
+TOKEN = environ['TOKEN']
 
 bot = commands.Bot(command_prefix='>')
 savedPool = []
