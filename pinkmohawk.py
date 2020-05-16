@@ -52,15 +52,16 @@ async def ping(ctx):
     await ctx.send('pong')
 
 @bot.command()
-async def lookup(ctx, search : str):
+async def search(ctx, search : str):
     await ctx.send("Performing Matrix search...")
     weapon = lookup_weapon(search)
    
     if weapon is None:
         await ctx.send("Couldn't find a Matrix entry for \"" + search + "\". Try again.")
+        await ctx.message.delete()
         return
+
     attackRatings = weapon["attack_ratings"]["close"] + "/" + weapon["attack_ratings"]["near"] + "/" + weapon["attack_ratings"]["medium"] + "/" + weapon["attack_ratings"]["far"] + "/" + weapon["attack_ratings"]["extreme"]
-    
 
     embed = discord.Embed(title=weapon["name"], description=weapon["description"], color=0x00ff00)
     embed.add_field(name="DV", value=weapon["damage_value"], inline=False)
@@ -68,6 +69,7 @@ async def lookup(ctx, search : str):
     embed.add_field(name="Availability", value=weapon["availability"], inline=False)
     embed.add_field(name="Cost", value=weapon["cost"] + u'\u00A5', inline=False)
     await ctx.send(embed=embed)
+    await ctx.message.delete()
 
 @bot.command()
 async def embedtest(ctx):
