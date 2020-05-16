@@ -4,7 +4,7 @@ import json
 def lookup_weapon(name):
     with open("data/weapons.json") as json_file:
         weapons = json.load(json_file)
-        return weapons.get(name, None)
+        return weapons.get(name)
         # for weapon in weapons:
         #     if name.lower() == weapon["name"].lower():
         #         print(weapon)
