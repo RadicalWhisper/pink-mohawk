@@ -5,16 +5,13 @@ from discord.ext import commands
 import random
 import math
 from lookup import *
-from dotenv import load_dotenv
 
-load_dotenv()
 TOKEN = os.getenv('TOKEN')
 
 bot = commands.Bot(command_prefix='>')
 savedPool = []
 
 activeCharacters = []
-
 
 @bot.event
 async def on_ready():
