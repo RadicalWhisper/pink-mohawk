@@ -52,13 +52,13 @@ async def ping(ctx):
     await ctx.send('pong')
 
 @bot.command()
-async def search(ctx, entry_type : str, search : str):
+async def search(ctx, entry_type=None, search=None):
     if entry_type is None:
         await ctx.send("Matrix Search usage: >search [type] [entry]\nAvailable types: weapon, armor, matrix, gear, augmentation, streetpedia.")
         return
 
     if entry_type is not "weapon" or "armor" or "matrix" or "gear" or "augmentation" or "streetpedia":
-        await ctx.send("Matrix Search failed. \"" + entry_type + "\" is not an avaiable type. Available types: weapon, armor, matrix, gear, augmentation, streetpedia.")
+        await ctx.send("Matrix Search failed: \"" + entry_type + "\" is not an avaiable type. Available types: weapon, armor, matrix, gear, augmentation, streetpedia.")
         return
 
     if entry_type.lower() == "weapon":
