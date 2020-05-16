@@ -51,7 +51,7 @@ def roll_dice_pool(dice):
 async def ping(ctx):
     await ctx.send('pong')
 
-@bot.command(aliases=['r'])
+@bot.command(aliases=['s'])
 async def search(ctx, entry_type=None, search=None):
     if entry_type is None:
         await ctx.send("Matrix Search usage: `>search [type] [entry]`\nIf the entry is multiple words, they must be wrapped in double quotes (\"\").\nAvailable types: weapon, armor, matrix, gear, augmentation, streetpedia.")
@@ -85,13 +85,6 @@ async def search(ctx, entry_type=None, search=None):
     
     if entry_type.lower() == "armor":
         await ctx.send("There are currently no armor entries in the database.")
-
-@bot.command()
-async def embedtest(ctx):
-    embed = discord.Embed(title="Title", description="Desc", color=0x00ff00)
-    embed.add_field(name="Field1", value="hi", inline=False)
-    embed.add_field(name="Field2", value="hi2", inline=False)
-    await ctx.send(embed=embed)
 
 @bot.command(aliases=['r'])
 async def roll(ctx, *args):
