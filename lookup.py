@@ -1,4 +1,7 @@
-#lookup.py
+"""
+Created on 16 May 2020
+@author: John Thomas
+"""
 import json
 
 ENTRY_TYPES = ["weapon", "armor", "matrix", "gear", "augmentation", "skill", "spell", "form", "sprite", "spirit", "streetpedia"]

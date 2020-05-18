@@ -1,4 +1,7 @@
-#dice.py
+"""
+Created on 16 May 2020
+@author: John Thomas
+"""
 import random
 
 def rollPool(dice, options=None):

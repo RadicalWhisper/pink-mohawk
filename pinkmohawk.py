@@ -1,4 +1,7 @@
-# pinkmohawk.py
+"""
+Created on 16 May 2020
+@author: John Thomas
+"""
 from os import environ
 import discord
 from discord.ext import commands
