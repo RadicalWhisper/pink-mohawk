@@ -8,6 +8,7 @@ from discord.ext import commands
 import random
 import math
 from lookup import *
+from dice import *
 
 TOKEN = environ['TOKEN']
 
@@ -21,33 +22,6 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     await bot.change_presence(status=discord.Status.online, activity=discord.Game("Shadowrun"))
-
-
-def check_glitch(rolls):
-    glitches = 0
-    print("Glitch Check Rolls: " + str(rolls))
-    for r in range(len(rolls)):
-        if rolls[r] == 1:
-            glitches += 1
-    print("exited for loop")
-    if glitches > len(rolls) / 2:
-        return True
-    else:
-        return False
-
-def get_hits(dicePool):
-    hits = 0
-    for d in range(len(dicePool)):
-        if dicePool[d] >= 5:
-            hits += 1
-    return hits
-
-def roll_dice_pool(dice):
-    dicePool = []
-    for d in range(dice):
-        val = random.randint(1, 6)
-        dicePool.append(val)
-    return dicePool
             
 
 @bot.command()
@@ -90,59 +64,43 @@ async def search(ctx, entry_type=None, search=None):
         await ctx.send("There are currently no armor entries for that type in the database.")
 
 @bot.command(aliases=['r'])
-async def roll(ctx, *args):
-    
-    dice = int(args[0])
-    print("Dice: " + str(dice))
-    #threshhold = 0
-    if len(args) > 1:
-        threshhold = int(args[1])
+async def roll(ctx, dice, *args):
 
-    try:
-        if int(dice) > 100:
-            await ctx.send("Woah there, chummer! That's a lot of dice. I can only roll 100 at a time, however. Try again!")
-            return
-
-        results = ("Rolling %i:game_die: for %s." % (dice, ctx.message.author.mention))
-
-        dicePool = roll_dice_pool(dice)
-        hits = get_hits(dicePool)
-        isGlitch = check_glitch(dicePool)
-        dicePool.sort()
-        print(dicePool)
-        results += ("\nHits: **" + str(hits) + "** " + str(dicePool))
-
-        if isGlitch and hits == 0:
-            results += ("\n:bangbang:**CRITICAL GLITCH**:bangbang:")
-        elif isGlitch:
-            results += ("\n:bang:**GLITCH**:bang:")
-        # if threshhold:
-
-        #     if hits >= threshhold:
-        #         results += ("\n**SUCCESS**")
-        #         if isGlitch:
-        #             results += ("\n:bang:**GLITCH**:bang:")
-        #     else:
-        #         results += ("\n**FAILURE**") 
-        #         if isGlitch and hits == 0:
-        #             results += ("\n*:bangbang:*CRITICAL GLITCH**:bangbang:")
-        #     await ctx.send("Rolling %i:game_die: for %s. (Threshhold: %i)" % (dice, ctx.message.author.mention, threshhold) )    
-             
-        # else:
-        #     await ctx.send("Rolling %i:game_die: for %s" % (dice, ctx.message.author.mention))
-        #     if isGlitch and hits == 0:
-        #         results += ("\n:bangbang:**CRITICAL GLITCH**:bangbang:")
-        #     elif isGlitch:
-        #         results += ("\n:bang:**GLITCH**:bang:")
-
-      
-        await ctx.send(results)
-        await ctx.message.delete()
-
-    except Exception as e:
-        print("Error: " + str(e))
-        await ctx.send("Error: " + str(e))
+    if int(dice) > 100:
+        await ctx.send("Woah there, chummer! That's a lot of dice. I can only roll 100 at a time, however. Try again!")
         return
+
+    results = ("Rolling %i:game_die: for %s" % (dice, ctx.message.author.mention))
+    roll_results = roll_pool(dice, args)
+    hits = roll_results[2]
+    pool = roll_results[0]
+    wild = roll_results[1]
+    results += ("\nHits: **" + str(hits) + "** " + str(pool) + "[" + wild + "]")
+
+    # if isGlitch and hits == 0:
+    #     results += ("\n:bangbang:**CRITICAL GLITCH**:bangbang:")
+    # elif isGlitch:
+    #     results += ("\n:bang:**GLITCH**:bang:")
+    # if threshhold:
+
+    #     if hits >= threshhold:
+    #         results += ("\n**SUCCESS**")
+    #         if isGlitch:
+    #             results += ("\n:bang:**GLITCH**:bang:")
+    #     else:
+    #         results += ("\n**FAILURE**") 
+    #         if isGlitch and hits == 0:
+    #             results += ("\n*:bangbang:*CRITICAL GLITCH**:bangbang:")
+    #     await ctx.send("Rolling %i:game_die: for %s. (Threshhold: %i)" % (dice, ctx.message.author.mention, threshhold) )    
+            
+    # else:
+    #     await ctx.send("Rolling %i:game_die: for %s" % (dice, ctx.message.author.mention))
+    #     if isGlitch and hits == 0:
+    #         results += ("\n:bangbang:**CRITICAL GLITCH**:bangbang:")
+    #     elif isGlitch:
+    #         results += ("\n:bang:**GLITCH**:bang:")
+    await ctx.send(results)
+    await ctx.message.delete()
         
 @bot.command(aliases=['rr'])
 async def reroll(ctx, rollval : int):

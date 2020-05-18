@@ -4,7 +4,7 @@ Created on 16 May 2020
 """
 import random
 
-def rollPool(dice, *args):
+def roll_pool(dice, *args):
     pool = []
     hits = 0
     wild = False
