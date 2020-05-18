@@ -70,8 +70,8 @@ async def roll(ctx, dice, *args):
         await ctx.send("Woah there, chummer! That's a lot of dice. I can only roll 100 at a time, however. Try again!")
         return
 
-    results = ("Rolling %i:game_die: for %s" % (dice, ctx.message.author.mention))
-    roll_results = roll_pool(dice, args)
+    results = ("Rolling %s:game_die: for %s" % (dice, ctx.message.author.mention))
+    roll_results = roll_pool(int(dice), args)
     hits = roll_results[2]
     pool = roll_results[0]
     wild = roll_results[1]
