@@ -62,8 +62,31 @@ def rollPool(dice, options=None):
         for d in range(pool):
             if pool[d] == 5:
                 hits -= 1
-    print("Pool: " + str(pool) + " Wild: " + str(wildResult) + " Hits: " + str(hits) + " Glitches: " + str(glitches))
+    print("Pool: " + str(pool) + " Wild: " + str(wildResult) + " Hits: "
+         + str(hits) + " Glitches: " + str(glitches))
     return pool, wildResult, hits, glitches
+
+
+def get_hits(pool, wild = 0):
+    hits = 0
+    for d in range(pool):
+        if pool[d] >= 5:
+            hits += 1
+    if wild >= 5:
+        hits += 3
+    return hits
+
+def check_glitch(pool, wild = 0):
+    glitches = 0
+    for d in range(pool):
+        if pool[d] == 1:
+            glitches += 1
+    if glitches > len(pool) / 2:
+        return True
+    else:
+        return False
+
+
 
 # rollPool(3, "2ew")
 

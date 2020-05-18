@@ -17,7 +17,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("Shadowrun 6e"))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game("Shadowrun"))
 
 
 def check_glitch(rolls):
@@ -83,8 +83,8 @@ async def search(ctx, entry_type=None, search=None):
         await ctx.send(embed=embed)
         await ctx.message.delete()
     
-    if entry_type.lower() == "armor":
-        await ctx.send("There are currently no armor entries in the database.")
+    if entry_type.lower() in ENTRY_TYPES:
+        await ctx.send("There are currently no armor entries for that type in the database.")
 
 @bot.command(aliases=['r'])
 async def roll(ctx, *args):

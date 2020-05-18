@@ -1,7 +1,7 @@
 {
-    "combat axe" : {
-        "name": "Combat Axe",
-        "description": "Shadowrun Sixth World: p247",
+    "test" : {
+        "name": "Test",
+        "description": "Rulebook: pXX",
         "damage_value": "5P",
          "attack_ratings": {
             "close": "9",
@@ -12,19 +12,5 @@
         },
         "availability": "4",
         "cost": "500"
-    },
-  "combat knife" : {
-        "name": "Combat Knife",
-        "description": "Shadowrun Sixth World: p247",
-        "damage_value": "3P",
-         "attack_ratings": {
-            "close": 8,
-            "near": 2,
-            "medium": null,
-            "far": null,
-            "extreme": null
-        },
-        "availability": "2",
-        "cost": "220"
     }
 }
