@@ -4,7 +4,7 @@ Created on 16 May 2020
 """
 import random
 
-def roll_pool(dice, *args):
+def roll_pool(dice, *args : str):
     pool = []
     hits = 0
     wild = False
@@ -12,12 +12,12 @@ def roll_pool(dice, *args):
     wild_val = 0
     twos_glitch = False
     explosions = 0
-    modifers = list(args)
-    if "w" in modifers:
+    print(args)
+    if "w" in args:
         wild = True
-    if "e" in modifers:
+    if "e" in args:
         explode = True
-    if "!" in modifers:
+    if "!" in args:
         twos_glitch = True
     print("Wild: " + str(wild) + " Explode: " + str(explode) + " Twos Glitch: " + str(twos_glitch))
     for d in range(dice if wild == False else dice - 1):
