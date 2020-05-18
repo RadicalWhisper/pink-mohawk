@@ -65,7 +65,7 @@ async def search(ctx, entry_type=None, search=None):
 
 @bot.command(aliases=['r'])
 async def roll(ctx, dice, *args):
-
+    print(str(dice) + " " + str(args))
     if int(dice) > 100:
         await ctx.send("Woah there, chummer! That's a lot of dice. I can only roll 100 at a time, however. Try again!")
         return
