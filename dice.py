@@ -18,7 +18,7 @@ def roll_pool(dice, *args):
         explode = True
     if "!" in args:
         twos_glitch = True
-
+    print("Wild: " + str(wild) + " Explode: " + str(explode + " Twos Glitch: " + str(twos_glitch)))
     for d in range(dice if wild == False else dice - 1):
         val = random.randint(1, 6)
         pool.append(val)
