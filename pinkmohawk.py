@@ -75,7 +75,7 @@ async def roll(ctx, dice, *args):
     hits = roll_results[2]
     pool = roll_results[0]
     wild = roll_results[1]
-    results += ("\nHits: **" + str(hits) + "** " + str(pool) + "[" + wild + "]")
+    results += ("\nHits: **" + str(hits) + "** " + str(pool) + "[" + str(wild) + "]")
 
     # if isGlitch and hits == 0:
     #     results += ("\n:bangbang:**CRITICAL GLITCH**:bangbang:")
