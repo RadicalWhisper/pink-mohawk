@@ -12,6 +12,7 @@ def roll_pool(dice, *args):
     wild_val = 0
     twos_glitch = False
     explosions = 0
+    print(args)
     if "w" in args:
         wild = True
     if "e" in args:
