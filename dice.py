@@ -12,12 +12,12 @@ def roll_pool(dice, *args):
     wild_val = 0
     twos_glitch = False
     explosions = 0
-    print(args)
-    if "w" in args:
+    modifers = list(args)
+    if "w" in modifers:
         wild = True
-    if "e" in args:
+    if "e" in modifers:
         explode = True
-    if "!" in args:
+    if "!" in modifers:
         twos_glitch = True
     print("Wild: " + str(wild) + " Explode: " + str(explode) + " Twos Glitch: " + str(twos_glitch))
     for d in range(dice if wild == False else dice - 1):
