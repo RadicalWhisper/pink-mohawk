@@ -64,14 +64,14 @@ async def search(ctx, entry_type=None, search=None):
         await ctx.send("There are currently no armor entries for that type in the database.")
 
 @bot.command(aliases=['r'])
-async def roll(ctx, dice, *args):
-    print(str(dice) + " " + str(args))
-    if int(dice) > 100:
+async def roll(ctx, command):
+    dice = int(re.search('[0-9]+', command).group())
+    if dice > 100:
         await ctx.send("Woah there, chummer! That's a lot of dice. I can only roll 100 at a time, however. Try again!")
         return
 
     results = ("Rolling %s:game_die: for %s" % (dice, ctx.message.author.mention))
-    roll_results = roll_pool(int(dice), args)
+    roll_results = roll_pool(command)
     hits = roll_results[2]
     pool = roll_results[0]
     wild = roll_results[1]

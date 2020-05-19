@@ -3,8 +3,12 @@ Created on 16 May 2020
 @author: John Thomas
 """
 import random
+import re
 
-def roll_pool(dice, *args : str):
+
+def roll_pool(command):
+    dice = int(re.search('[0-9]+', command).group())
+    modifiers = list(command)
     pool = []
     hits = 0
     wild = False
@@ -12,12 +16,11 @@ def roll_pool(dice, *args : str):
     wild_val = 0
     twos_glitch = False
     explosions = 0
-    print(args)
-    if "w" in args:
+    if "w" in modifiers:
         wild = True
-    if "e" in args:
+    if "e" in modifiers:
         explode = True
-    if "!" in args:
+    if "!" in  modifiers:
         twos_glitch = True
     print("Wild: " + str(wild) + " Explode: " + str(explode) + " Twos Glitch: " + str(twos_glitch))
     for d in range(dice if wild == False else dice - 1):
@@ -59,7 +62,7 @@ def is_glitch(pool, *args):
     else:
         return False
 
-#rollPool(17, "e", "!", "w")
+#roll_pool("17w")
 #s_glitch([1,2,2,3,4,5], "!")
 
             
