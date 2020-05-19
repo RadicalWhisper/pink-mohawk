@@ -70,10 +70,12 @@ async def roll(ctx, command, threshold=None):
         await ctx.send("Woah there, chummer! That's a lot of dice. I can only roll 100 at a time, however. Try again!")
         return
 
-    results = ("Rolling %s:game_die: for %s" % (dice, ctx.message.author.mention))
+    results = ("Rolling " + str(dice) + ":game_die:")
     if threshold is not None:
         threshold = int(threshold)
-        results += " Threshold: " + str(threshold)
+        results += "(" + str(threshold) + ")"
+    results += " for " + str(ctx.message.author.mention)
+
     roll_results = roll_pool(command)
     hits = roll_results[2]
     pool = roll_results[0]
