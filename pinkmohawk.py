@@ -87,7 +87,7 @@ async def roll(ctx, command, threshold=None):
     if glitched and hits == 0:
         results += ("\n:bangbang:**CRITICAL GLITCH**:bangbang:")
     elif glitched:
-        results += ("\n:bang:**GLITCH**:bang:")
+        results += ("\n:bangbang:**GLITCH**:bangbang:")
 
     if threshold is not None:
         if hits >= threshold:
