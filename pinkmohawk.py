@@ -64,41 +64,34 @@ async def search(ctx, entry_type=None, search=None):
         await ctx.send("There are currently no armor entries for that type in the database.")
 
 @bot.command(aliases=['r'])
-async def roll(ctx, command):
+async def roll(ctx, command, threshold=None):
     dice = int(re.search('[0-9]+', command).group())
     if dice > 100:
         await ctx.send("Woah there, chummer! That's a lot of dice. I can only roll 100 at a time, however. Try again!")
         return
 
     results = ("Rolling %s:game_die: for %s" % (dice, ctx.message.author.mention))
+    if threshold is not None:
+        results += " Threshold: " + str(threshold)
     roll_results = roll_pool(command)
     hits = roll_results[2]
     pool = roll_results[0]
     wild = roll_results[1]
-    results += ("\nHits: **" + str(hits) + "** " + str(pool) + "[" + str(wild) + "]")
+    glitched = roll_results[3]
+    results += ("\n**" + str(hits) + "** hits " + str(pool))
+    if wild != 0: results += "[" + str(wild) + "]"
 
-    # if isGlitch and hits == 0:
-    #     results += ("\n:bangbang:**CRITICAL GLITCH**:bangbang:")
-    # elif isGlitch:
-    #     results += ("\n:bang:**GLITCH**:bang:")
-    # if threshhold:
+    if glitched and hits == 0:
+        results += ("\n:bangbang:**CRITICAL GLITCH**:bangbang:")
+    elif glitched:
+        results += ("\n:bang:**GLITCH**:bang:")
 
-    #     if hits >= threshhold:
-    #         results += ("\n**SUCCESS**")
-    #         if isGlitch:
-    #             results += ("\n:bang:**GLITCH**:bang:")
-    #     else:
-    #         results += ("\n**FAILURE**") 
-    #         if isGlitch and hits == 0:
-    #             results += ("\n*:bangbang:*CRITICAL GLITCH**:bangbang:")
-    #     await ctx.send("Rolling %i:game_die: for %s. (Threshhold: %i)" % (dice, ctx.message.author.mention, threshhold) )    
+    if threshold is not None:
+        if hits >= threshold:
+            results += ("\n**SUCCESS**")
+        else:
+            results += ("\n**FAILURE**")     
             
-    # else:
-    #     await ctx.send("Rolling %i:game_die: for %s" % (dice, ctx.message.author.mention))
-    #     if isGlitch and hits == 0:
-    #         results += ("\n:bangbang:**CRITICAL GLITCH**:bangbang:")
-    #     elif isGlitch:
-    #         results += ("\n:bang:**GLITCH**:bang:")
     await ctx.send(results)
     await ctx.message.delete()
         
