@@ -72,6 +72,7 @@ async def roll(ctx, command, threshold=None):
 
     results = ("Rolling %s:game_die: for %s" % (dice, ctx.message.author.mention))
     if threshold is not None:
+        threshold = int(threshold)
         results += " Threshold: " + str(threshold)
     roll_results = roll_pool(command)
     hits = roll_results[2]
@@ -91,7 +92,7 @@ async def roll(ctx, command, threshold=None):
             results += ("\n**SUCCESS**")
         else:
             results += ("\n**FAILURE**")     
-            
+
     await ctx.send(results)
     await ctx.message.delete()
         
