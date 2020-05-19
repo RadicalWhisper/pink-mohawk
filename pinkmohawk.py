@@ -146,7 +146,7 @@ async def legal(ctx):
 @bot.command()
 async def about(ctx):
     embed = discord.Embed(title="Pink Mohwak", description="A Discord bot for playing Shadowrun 6e online", color=0xff69b4)
-    embed.set_thumbnail(url="icon.png")
+    embed.set_thumbnail(url=ctx.message.guild.icon_url)
     embed.add_field(name="Developer", value="John Thomas (Whisper)")
     embed.add_field(name="GitHub", value="https://github.com/pink-mohawk/pink-mohawk-bot")
     embed.add_field(name="Site", value="https://mohawk.pink")
