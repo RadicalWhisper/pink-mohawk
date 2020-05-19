@@ -21,7 +21,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("Shadowrun"))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game("Shadowrun 6e"))
             
 
 @bot.command()
@@ -147,7 +147,7 @@ async def legal(ctx):
 async def about(ctx):
     embed = discord.Embed(title="Pink Mohwak", description="A Discord bot for playing Shadowrun 6e online", color=0xff69b4)
     embed.set_thumbnail(url=ctx.message.guild.icon_url)
-    embed.add_field(name="Developer", value="John Thomas (Whisper)")
+    embed.add_field(name="Developer", value="John 'JT' Thomas (Whisper)")
     embed.add_field(name="GitHub", value="https://github.com/pink-mohawk/pink-mohawk-bot")
     embed.add_field(name="Site", value="https://mohawk.pink")
     embed.set_footer(text="2020 © John Thomas")
