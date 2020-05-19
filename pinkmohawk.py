@@ -136,9 +136,22 @@ async def adp(ctx):
     await ctx.send("Hits: **" + str(get_hits(savedPool)) + "** " + str(savedPool))
     await ctx.message.delete()
 
+
 @bot.command()
 async def legal(ctx):
     await ctx.send("The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun. The Topps Company, Inc. has granted permission to Pink Mohawk to use such names, logos, artwork, marks and/or any proprietary materials for promotional and informational purposes on its website but does not endorse, and is not affiliated with Pink Mohawk in any official capacity whatsoever.")
     await ctx.message.delete()
+
+
+@bot.command()
+async def about(ctx):
+    embed = discord.Embed(title="Pink Mohwak", description="A Discord bot for playing Shadowrun 6e online", color=0xff69b4)
+    embed.set_thumbnail(url="icon.png")
+    embed.add_field(name="Developer", value="John Thomas (Whisper)")
+    embed.add_field(name="GitHub", value="https://github.com/pink-mohawk/pink-mohawk-bot")
+    embed.add_field(name="Site", value="https://mohawk.pink")
+    embed.set_footer(text="2020 © John Thomas")
+    await ctx.send(embed=embed)
+    
 
 bot.run(TOKEN)
