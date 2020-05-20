@@ -7,10 +7,16 @@ import discord
 from discord.ext import commands
 import random
 import math
+from enum import Enum
 from lookup import *
 from dice import *
 
 TOKEN = environ['TOKEN']
+
+class Lanaguage(Enum):
+    ENGLISH = 1
+    GERMAN = 2
+
 
 bot = commands.Bot(command_prefix='>')
 savedPool = []
@@ -27,6 +33,13 @@ async def on_ready():
 @bot.command()
 async def ping(ctx):
     await ctx.send('pong')
+
+@bot.command(aliases=['de'])
+async def en(ctx):
+    if ctx.invoked_with == "de":
+        await ctx.send("de")
+    else:
+        await ctx.send("en")
 
 @bot.command(aliases=['s'])
 async def search(ctx, entry_type=None, search=None):
