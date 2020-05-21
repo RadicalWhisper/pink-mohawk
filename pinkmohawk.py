@@ -11,14 +11,15 @@ from enum import Enum
 from lookup import *
 from dice import *
 
-TOKEN = environ['TOKEN']
+TOKEN = environ['DISCORD_TOKEN']
+COMMAND_PREFIX = environ['DISCORD_COMMAND_PREFIX']
 
 class Lanaguage(Enum):
     ENGLISH = 1
     GERMAN = 2
 
 
-bot = commands.Bot(command_prefix='>')
+bot = commands.Bot(command_prefix=COMMAND_PREFIX)
 savedPool = []
 
 @bot.event
