@@ -10,11 +10,20 @@ import math
 from enum import Enum
 from lookup import *
 from dice import *
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+import json
+
+cred = credentials.Certificate('firebase-service-account.json')
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 
 TOKEN = environ['DISCORD_TOKEN']
 COMMAND_PREFIX = environ['DISCORD_COMMAND_PREFIX']
 
-class Lanaguage(Enum):
+class Language(Enum):
     ENGLISH = 1
     GERMAN = 2
 
@@ -38,6 +47,7 @@ async def ping(ctx):
 @bot.command(aliases=['de'])
 async def en(ctx):
     if ctx.invoked_with == "de":
+
         await ctx.send("de")
     else:
         await ctx.send("en")
@@ -77,11 +87,20 @@ async def search(ctx, entry_type=None, search=None):
     if entry_type.lower() in ENTRY_TYPES:
         await ctx.send("There are currently no armor entries for that type in the database.")
 
-@bot.command(aliases=['r'])
+@bot.command(aliases=['r','würfeln'])
 async def roll(ctx, command, threshold=None):
+    language = Language.ENGLISH
+    results = ""
+    if ctx.invoked_with == "würfeln":
+        language = Language.GERMAN
+
     dice = int(re.search('[0-9]+', command).group())
     if dice > 100:
-        await ctx.send("Woah there, chummer! That's a lot of dice. I can only roll 100 at a time, however. Try again!")
+        if language == Language.ENGLISH:
+            results = db.collection(u'strings').document(u'too_many_dice').get().to_dict()["en"]
+        elif language == Language.GERMAN:
+            results = db.collection(u'strings').document(u'too_many_dice').get().to_dict()["de"]
+        await ctx.send(results)
         return
 
     results = ("Rolling " + str(dice) + ":game_die:")
