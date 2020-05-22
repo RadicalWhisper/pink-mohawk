@@ -1,0 +1,22 @@
+{
+    "too_many_dice" : {
+        "en" : "Woah there, chummer! That's a lot of dice. I can only roll 100 at a time. Try again!",
+        "de" : "TODO - Translate to German: Woah there, chummer! That's a lot of dice. I can only roll 100 at a time. Try again!"
+    },
+    "set_language" : {
+        "en" : "This channel's language is now set to %s.",
+        "de" : "TODO - Translate to German: This channel's language is now set to %s."
+    },
+    "rolling" : {
+        "en" : "Rolling %i:game_die:%s for %s",
+        "de" : "TODO - Translate to German: Rolling %i:game_die:%s for %s"
+    },
+    "success" : {
+        "en" : "\n**SUCCESS**",
+        "de" : "\n**SUCCESS**"
+    },
+    "failure" : {
+        "en" : "\n**FAILURE**",
+        "de" : "\n**FAILURE**"
+    }
+}
