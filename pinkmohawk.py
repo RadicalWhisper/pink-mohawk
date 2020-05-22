@@ -7,29 +7,23 @@ import discord
 from discord.ext import commands
 import random
 import math
-from enum import Enum
-from lookup import *
-from dice import *
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+import lookup
+import dice
+import re
 import json
+from translations import string_builder, get_channel_language, load_strings, set_channel_language
+from enum import Enum
+from data import DB
 
-cred = credentials.Certificate('firebase-service-account.json')
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
+class Languages(Enum):
+    EN = "English"
+    DE = "Deutsch"
 
 TOKEN = environ['DISCORD_TOKEN']
 COMMAND_PREFIX = environ['DISCORD_COMMAND_PREFIX']
-
-class Language(Enum):
-    ENGLISH = 1
-    GERMAN = 2
-
+load_strings()
 
 bot = commands.Bot(command_prefix=COMMAND_PREFIX)
-savedPool = []
 
 @bot.event
 async def on_ready():
@@ -37,20 +31,21 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("Shadowrun 6e"))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game("Shadowrun | " + COMMAND_PREFIX + "help"))
             
+
+@bot.command(aliases=["lang"])
+async def language(ctx, language):
+    languages = {"en":"English", "de":"Deutsch"}
+    if language in languages:
+        set_channel_language(ctx.message.channel.id, language)
+        await ctx.send(string_builder("set_language", language) % (languages[language]))
+    else:
+        await ctx.send("\"" + language + "\"" + " is not a supported language code.")
 
 @bot.command()
 async def ping(ctx):
     await ctx.send('pong')
-
-@bot.command(aliases=['de'])
-async def en(ctx):
-    if ctx.invoked_with == "de":
-
-        await ctx.send("de")
-    else:
-        await ctx.send("en")
 
 @bot.command(aliases=['s'])
 async def search(ctx, entry_type=None, search=None):
@@ -58,7 +53,7 @@ async def search(ctx, entry_type=None, search=None):
         await ctx.send("Matrix Search usage: `>search [type] [entry]`\nIf the entry is multiple words, they must be wrapped in double quotes (\"\").\nAvailable types: weapon, armor, matrix, gear, augmentation, streetpedia.")
         return
 
-    if entry_type.lower() not in ENTRY_TYPES:
+    if entry_type.lower() not in lookup.ENTRY_TYPES:
         await ctx.send("Matrix Search failed: \"" + entry_type + "\" is not an avaiable type. Available types: weapon, armor, matrix, gear, augmentation, streetpedia.")
         return
 
@@ -67,7 +62,7 @@ async def search(ctx, entry_type=None, search=None):
             await ctx.send("Command requires `[entry]`. Please try your search again.")
 
         await ctx.send("Performing Matrix search for \"" + search + "\"...")    
-        weapon = lookup_weapon(search)
+        weapon = lookup.lookup_weapon(search)
    
         if weapon is None:
             await ctx.send("Couldn't find a Matrix entry for \"" + search + "\". Try again.")
@@ -84,32 +79,20 @@ async def search(ctx, entry_type=None, search=None):
         await ctx.send(embed=embed)
         await ctx.message.delete()
     
-    if entry_type.lower() in ENTRY_TYPES:
+    if entry_type.lower() in lookup.ENTRY_TYPES:
         await ctx.send("There are currently no armor entries for that type in the database.")
 
-@bot.command(aliases=['r','würfeln'])
+@bot.command(aliases=["r","würfeln"])
 async def roll(ctx, command, threshold=None):
-    language = Language.ENGLISH
-    results = ""
-    if ctx.invoked_with == "würfeln":
-        language = Language.GERMAN
-
-    dice = int(re.search('[0-9]+', command).group())
-    if dice > 100:
-        if language == Language.ENGLISH:
-            results = db.collection(u'strings').document(u'too_many_dice').get().to_dict()["en"]
-        elif language == Language.GERMAN:
-            results = db.collection(u'strings').document(u'too_many_dice').get().to_dict()["de"]
+    dice_pool = int(re.search('[0-9]+', command).group())
+    if dice_pool > 100:
+        results = string_builder("too_many_dice", get_channel_language(ctx.message.channel.id))
         await ctx.send(results)
         return
+    
+    results = (string_builder("rolling", get_channel_language(ctx.message.channel.id)) % (dice_pool, "(" + str(threshold) + ")" if threshold is not None else "", str(ctx.message.author.mention)))
 
-    results = ("Rolling " + str(dice) + ":game_die:")
-    if threshold is not None:
-        threshold = int(threshold)
-        results += "(" + str(threshold) + ")"
-    results += " for " + str(ctx.message.author.mention)
-
-    roll_results = roll_pool(command)
+    roll_results = dice.roll_pool(command)
     hits = roll_results[2]
     pool = roll_results[0]
     wild = roll_results[1]
@@ -117,56 +100,28 @@ async def roll(ctx, command, threshold=None):
     results += ("\n**" + str(hits) + "** hits " + str(pool))
     if wild != 0: results += "[" + str(wild) + "]"
 
+    if threshold is not None:
+        if hits >= int(threshold):
+            results += (string_builder("success", get_channel_language(ctx.message.channel.id)))
+        else:
+            results += (string_builder("failure", get_channel_language(ctx.message.channel.id)))    
+
     if glitched and hits == 0:
         results += ("\n:bangbang:**CRITICAL GLITCH**:bangbang:")
     elif glitched:
         results += ("\n:bangbang:**GLITCH**:bangbang:")
 
-    if threshold is not None:
-        if hits >= threshold:
-            results += ("\n**SUCCESS**")
-        else:
-            results += ("\n**FAILURE**")     
+     
 
     await ctx.send(results)
     await ctx.message.delete()
         
-@bot.command(aliases=['rr'])
-async def reroll(ctx, rollval : int):
-    try:
-        if len(savedPool) > 0:
-            for r in savedPool:
-                if savedPool[r] == rollval:
-                    newval = random.randint(1, 6)
-                    print("New value: " + str(newval))
-                    savedPool[r] = newval
-                    savedPool.sort()
-                    await ctx.send("%s rerolled a %i and got a %i instead. The new dice pool is below:" % (ctx.message.author.mention, rollval, newval))
-                    resultString = ("Hits: **" + str(get_hits(savedPool)) + "** " + str(savedPool))
-                    await ctx.send(resultString)
-                    return
-                else:
-                    await ctx.send("There are no %is in the active dice pool. Try again." % (rollval))
-        else:
-            await ctx.send("There is nothing to reroll. Try rolling first.")
-
-    except Exception as e:
-        print("Error: " + str(e))
-        await ctx.send("Error: " + str(e))
-        return
 
 
 @bot.command()
 async def buyhits(ctx, dice: int):
     hits = math.floor(dice / 4)
     await ctx.send("%s bought %i hits from %i:game_die:." % (ctx.message.author.mention, hits, dice))
-    await ctx.message.delete()
-
-@bot.command()
-async def adp(ctx):
-    # Prints the current active dice pool with hits and glitches
-    await ctx.send("The current active dice pool is:")
-    await ctx.send("Hits: **" + str(get_hits(savedPool)) + "** " + str(savedPool))
     await ctx.message.delete()
 
 
@@ -178,13 +133,23 @@ async def legal(ctx):
 
 @bot.command()
 async def about(ctx):
-    embed = discord.Embed(title="Pink Mohwak", description="A Discord bot for playing Shadowrun 6e online", color=0xff69b4)
-    embed.set_thumbnail(url=ctx.message.guild.icon_url)
-    embed.add_field(name="Developer", value="John 'JT' Thomas (Whisper)")
-    embed.add_field(name="GitHub", value="https://github.com/pink-mohawk/pink-mohawk-bot")
-    embed.add_field(name="Site", value="https://mohawk.pink")
+    embed = discord.Embed(title="Pink Mohawk", description="A Discord bot for playing Shadowrun Sixth World", color=0xff69b4)
+    embed.set_thumbnail(url="https://i.imgur.com/Y1ZrwN7.png")
+    embed.add_field(name="Developer", value="John 'JT' Thomas", inline=False)
+    embed.add_field(name="Documentation", value="https://docs.mohawk.pink/", inline=False)
+    embed.add_field(name="GitHub", value="https://github.com/pink-mohawk/pink-mohawk-bot", inline=False)
+    embed.add_field(name="Site", value="https://mohawk.pink", inline=False)
     embed.set_footer(text="2020 © John Thomas")
     await ctx.send(embed=embed)
-    
 
+
+@bot.command(aliases=["contributors"])
+async def credits(ctx):
+    with open("data/contributors.json", "r") as json_file:
+        contributors = json.load(json_file)
+        contributors.sort()
+        await ctx.send(":heart:**CONTRIBUTORS**:heart:\n" + "\n".join(contributors))
+        await ctx.message.delete()
+
+        
 bot.run(TOKEN)
