@@ -14,6 +14,7 @@ import json
 from translations import string_builder, get_channel_language, load_strings, set_channel_language
 from enum import Enum
 from data import DB
+import cogs.combat
 
 class Languages(Enum):
     EN = "English"
@@ -151,5 +152,6 @@ async def credits(ctx):
         await ctx.send(":heart:**CONTRIBUTORS**:heart:\n" + "\n".join(contributors))
         await ctx.message.delete()
 
-        
+
+bot.load_extension("cogs.combat")
 bot.run(TOKEN)
